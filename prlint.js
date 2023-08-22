@@ -33,7 +33,7 @@ const getDiffFiles = (target, source = "HEAD") => new Promise((resolve, reject) 
   gitDiff.on("close", () => {
     if (isDebug) console.log("diff", JSON.stringify(result, null, 2))
     if (!isError) return resolve(result.split("\n"));
-    reject(result);
+    reject(new Error(result));
   })
 });
 
