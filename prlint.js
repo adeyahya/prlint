@@ -5,13 +5,17 @@ const { minimatch } = require("minimatch");
 const { spawn } = require("node:child_process");
 const { readFile } = require("node:fs/promises");
 
+const argv = process.argv ?? [];
+const isDebug = argv.some(n => n === "--debug");
+
 /**
  * 
- * @param {string} source source branch
  * @param {string} target target branch
+ * @param {string} source source branch
  * @returns {Promise<string>}
  */
-const getDiffFiles = (source, target) => new Promise((resolve, reject) => {
+const getDiffFiles = (target, source = "HEAD") => new Promise((resolve, reject) => {
+  if (isDebug) console.log("branch", "source:" + source, "target:" + target);
   let isError = false;
   let result = '';
 
@@ -27,6 +31,7 @@ const getDiffFiles = (source, target) => new Promise((resolve, reject) => {
     result += data;
   })
   gitDiff.on("close", () => {
+    if (isDebug) console.log("diff", JSON.stringify(result, null, 2))
     if (!isError) return resolve(result.split("\n"));
     reject(result);
   })
@@ -36,12 +41,13 @@ const getDiffFiles = (source, target) => new Promise((resolve, reject) => {
   try {
     const configStr = await readFile(path.resolve(process.cwd(), ".prlint"), { encoding: "utf-8" });
     const config = yaml.load(configStr);
-    const diffFiles = await getDiffFiles(process.env.CI_MERGE_REQUEST_SOURCE_BRANCH_NAME, process.env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME);
+    if (isDebug) console.log("config", JSON.stringify(config, null, 2));
+    const diffFiles = await getDiffFiles(process.env.TARGET_BRANCH, process.env.SOURCE_BRANCH);
     for (const key in config) {
       const rule = config[key];
       if (rule.files && !Array.isArray(rule.files)) throw new Error(`Invalid config, files should be an array in "${key}"`);
       if (!Array.isArray(rule.rules)) throw new Error(`Invalid config, rules should be an array in "${key}"`);
-      if (typeof rule.eval !== "string") throw new Error(`Invalid config, eval should a string "${key}"`);
+      if (typeof rule.envar !== "string") throw new Error(`Invalid config, eval should be a string "${key}"`);
       const description = rule.description || "";
 
       const isRuleMatch = !rule.files ? true : diffFiles.some(fname => {
@@ -51,7 +57,7 @@ const getDiffFiles = (source, target) => new Promise((resolve, reject) => {
       if (isRuleMatch) {
         const isValid = rule.rules.some(ruleRe => {
           const re = new RegExp(ruleRe);
-          const targetEvaluation = process.env[`${rule.eval}`];
+          const targetEvaluation = process.env[`${rule.envar}`];
           return re.exec(targetEvaluation) !== null;
         })
         if (!isValid)

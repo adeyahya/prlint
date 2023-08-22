@@ -4,4 +4,4 @@ MR Title:
     - src/**/*
   rules:
     - "^(feat|fix|doc|chore):"
-  envar: CI_MERGE_REQUEST_TITLE
+  envar: TITLE
