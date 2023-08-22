@@ -2,14 +2,14 @@
   "name": "prlint",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "prlint.js",
   "pkg": {
     "targets": [
       "node14-linux-arm64"
     ]
   },
   "scripts": {
-    "build": "pkg index.js -o bin/prlint -C Brotli -t node18-linux-x64"
+    "build": "pkg prlint.js --out-path bin -C Brotli"
   },
   "author": "Ade Yahya",
   "license": "MIT",
