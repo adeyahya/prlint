@@ -36,7 +36,7 @@ const getDiffFiles = (source, target) => new Promise((resolve, reject) => {
   try {
     const configStr = await readFile(path.resolve(process.cwd(), ".prlint"), { encoding: "utf-8" });
     const config = yaml.load(configStr);
-    const diffFiles = await getDiffFiles("development", "master");
+    const diffFiles = await getDiffFiles(process.env.CI_MERGE_REQUEST_SOURCE_BRANCH_NAME, process.env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME);
     for (const key in config) {
       const rule = config[key];
       if (rule.files && !Array.isArray(rule.files)) throw new Error(`Invalid config, files should be an array in "${key}"`);
