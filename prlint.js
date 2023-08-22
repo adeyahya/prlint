@@ -19,7 +19,7 @@ const getDiffFiles = (target, source = "HEAD") => new Promise((resolve, reject) 
   let isError = false;
   let result = '';
 
-  const gitDiff = spawn("git", ["diff", "--name-only", `${target}...${source}`], {
+  const gitDiff = spawn("git", ["diff", "--name-only", `${source}...${target}`], {
     cwd: process.cwd()
   })
 
