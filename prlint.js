@@ -56,7 +56,7 @@ const getDiffFiles = (target, source = "HEAD") => new Promise((resolve, reject) 
 
       if (isRuleMatch) {
         const isValid = rule.rules.some(ruleRe => {
-          const re = new RegExp(ruleRe);
+          const re = new RegExp(ruleRe, "i");
           const targetEvaluation = process.env[`${rule.envar}`];
           return re.exec(targetEvaluation) !== null;
         })
