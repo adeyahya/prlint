@@ -18,14 +18,17 @@ func (cm *ConfigMap) Parse() {
 	}
 	for idx, configFile := range configFileList {
 		configRaw, err := os.ReadFile(configFile)
-		if err != nil && idx+1 == len(configFileList) {
-			PrintRed("Could not find config file in current directory\n")
-			os.Exit(1)
-		}
-
-		err = yaml.Unmarshal(configRaw, cm)
 		if err != nil {
-			panic(err)
+			if idx+1 == len(configFileList) {
+				PrintRed("Could not find config file in current directory\n%s", err.Error())
+				os.Exit(1)
+			}
+		} else {
+			err = yaml.Unmarshal(configRaw, cm)
+			if err != nil {
+				panic(err)
+			}
+			break
 		}
 	}
 }
