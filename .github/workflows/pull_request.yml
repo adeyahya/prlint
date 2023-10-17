@@ -1,27 +1,24 @@
 
-name: CI
+name: Pull Request
 on:
-  push:
-    branches:
-      - 'main'
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
     branches:
       - 'main'
 env:
   TITLE: ${{ github.event.pull_request.title }}
 
 jobs:
-  release:
+  lint:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
           go-version: 1.19
-      - uses: go-semantic-release/action@v1
-        with:
-          hooks: goreleaser
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: go build .
+      - run: ./prlint -s $GITHUB_SHA
