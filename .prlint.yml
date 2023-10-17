@@ -1,4 +1,4 @@
-MR Title:
+PR Title:
   description: it should follows Conventional Commits (feat/fix/doc/chore) 
   rules:
     - "^(feat|fix|doc|chore):"
