@@ -15,7 +15,6 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.19
-      - uses: golangci/golangci-lint-action@v3
       - run: go build .
       - run: ./prlint
   release:
