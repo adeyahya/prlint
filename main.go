@@ -39,7 +39,7 @@ func main() {
 				fmt.Printf("evaluating ")
 				PrintYellow("%s", configKey)
 				if !config.IsMatch(diffFiles) {
-					PrintGreen(" PASSED!")
+					PrintGreen(" PASSED!\n")
 					continue
 				}
 
@@ -50,7 +50,7 @@ func main() {
 					os.Exit(1)
 				}
 
-				PrintGreen(" PASSED!")
+				PrintGreen(" PASSED!\n")
 			}
 
 			return nil
