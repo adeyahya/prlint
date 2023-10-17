@@ -2,9 +2,9 @@ package main
 
 import (
 	"os"
-	"path/filepath"
 	"regexp"
 
+	"github.com/gobwas/glob"
 	"gopkg.in/yaml.v3"
 )
 
@@ -66,10 +66,12 @@ func (c *Config) IsMatch(files []string) bool {
 
 	for _, pattern := range *c.Files {
 		for _, f := range files {
-			matched, err := filepath.Match(pattern, f)
+			g, err := glob.Compile(pattern)
 			if err != nil {
-				panic(err)
+				PrintRed("invalid file pattern %s, please use valid glob pattern. see https://en.wikipedia.org/wiki/Glob_(programming)", pattern)
+				os.Exit(1)
 			}
+			matched := g.Match(f)
 
 			if matched {
 				return true
