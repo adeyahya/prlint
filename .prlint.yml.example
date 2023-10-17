@@ -1,0 +1,8 @@
+MR Title:
+  description: it should follows Conventional Commits (feat/fix/doc/chore) 
+  files:
+    - "**/*"
+    - "*"
+  rules:
+    - "^(feat|fix|doc|chore):"
+  envar: TITLE
