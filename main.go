@@ -12,9 +12,9 @@ func main() {
 	app := &cli.App{
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "tail",
-				Aliases:  []string{"t"},
-				Usage:    "Source commit hash / TAIL",
+				Name:     "source",
+				Aliases:  []string{"s"},
+				Usage:    "Source commit hash",
 				Required: true,
 			},
 			&cli.StringFlag{
@@ -33,7 +33,7 @@ func main() {
 		Action: func(ctx *cli.Context) error {
 			var configMap ConfigMap
 			configMap.Parse()
-			diffFiles := getDiff(ctx.String("repo"), ctx.String("tail"), ctx.String("dest"))
+			diffFiles := getDiff(ctx.String("repo"), ctx.String("source"), ctx.String("dest"))
 
 			for configKey, config := range configMap {
 				fmt.Printf("evaluating ")
